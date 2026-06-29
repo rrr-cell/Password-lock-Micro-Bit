@@ -63,7 +63,7 @@ keys = [
 "1"
 ]
 ]
-let correctCode = "1234"
+let correctCode = "123A456B789C0D"
 // CRITICAL HARDWARE FIX: Turn off the built-in 5x5 LED matrix to free up pins completely
 led.enable(false)
 // 3. Set Pull-Up resistors on column pins
@@ -95,34 +95,30 @@ basic.forever(function () {
                 userEntered = userEntered.substr(0, userEntered.length - 1)
             }
         } else {
-            music.playTone(262, music.beat(BeatFraction.Whole))
+            music.playTone(262, music.beat(BeatFraction.Quarter))
             userEntered = "" + userEntered + myKey
             I2C_LCD1602.ShowString(myKey, userEntered.length - 1, 1)
             // Validate code when 4 characters are reached
-            if (userEntered.length == 4) {
+            if (userEntered.length == 14) {
                 basic.pause(500)
                 I2C_LCD1602.clear()
                 if (userEntered == correctCode) {
+                    strip.showColor(neopixel.colors(NeoPixelColors.Green))
                     I2C_LCD1602.ShowString("ACCESS GRANTED", 0, 0)
                     music.playTone(523, music.beat(BeatFraction.Double))
-                    strip.showColor(neopixel.colors(NeoPixelColors.Green))
-                    servos.P0.setAngle(90)
                 } else {
+                    strip.showColor(neopixel.colors(NeoPixelColors.Red))
                     I2C_LCD1602.ShowString("ACCESS DENIED", 0, 0)
                     music.playTone(131, music.beat(BeatFraction.Double))
-                    strip.showColor(neopixel.colors(NeoPixelColors.Red))
                 }
                 basic.pause(2000)
                 userEntered = ""
                 I2C_LCD1602.clear()
-                I2C_LCD1602.ShowString("Enter Code:", 0, 0)
-                // Debounce delay
-                basic.pause(5000)
-                servos.P0.setAngle(0)
                 strip.clear()
                 // Debounce delay
                 basic.pause(300)
                 strip.show()
+                I2C_LCD1602.ShowString("Enter Code:", 0, 0)
             }
         }
         // Debounce delay
